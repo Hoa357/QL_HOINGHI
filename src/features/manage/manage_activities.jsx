@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
@@ -258,7 +260,14 @@ const ManageActivities = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa hoạt động này?")) return;
+    const activity = activities.find((a) => a.id === id);
+    const isExpired = isRegistrationExpired(activity?.registrationDeadline);
+
+    const confirmMessage = isExpired
+      ? `Bạn có chắc chắn muốn xóa hoạt động "${activity?.title}" không?\n\n⚠️ Hoạt động này đã hết hạn đăng ký.`
+      : `Bạn có chắc chắn muốn xóa hoạt động "${activity?.title}" không?\n\n⚠️ Hành động này không thể hoàn tác!`;
+
+    if (!window.confirm(confirmMessage)) return;
 
     try {
       await deleteDoc(doc(db, "activities", id));
@@ -271,6 +280,16 @@ const ManageActivities = () => {
   };
 
   const toggleActivityStatus = async (id, currentStatus) => {
+    const activity = activities.find((a) => a.id === id);
+    const isExpired = isRegistrationExpired(activity?.registrationDeadline);
+
+    if (isExpired) {
+      toast.error(
+        "Không thể thay đổi trạng thái của hoạt động đã hết hạn đăng ký!"
+      );
+      return;
+    }
+
     try {
       await updateDoc(doc(db, "activities", id), {
         status: !currentStatus,
@@ -335,19 +354,19 @@ const ManageActivities = () => {
   };
 
   return (
-    <div className="min-h-screen flex  flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Header */}
       <header className="bg-indigo-900 text-white px-6 py-4 flex justify-between flex-wrap items-center">
         <div className="flex items-center gap-3">
           <img src="assets/images/logo.png" alt="Logo" className="w-10 h-10" />
-          <h1 className="text-lg font-bold">Khoa Công Nghệ Thông Tin</h1>
+          <h1 className="text-lg font-bold">Công Nghệ Thông Tin</h1>
         </div>
         <nav>
           <ul className="flex flex-wrap gap-3 items-center">
             <li>
               <a
                 href="/admin_dashboard"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
+                className="px-3 py-2 font-semibold hover:underline"
               >
                 Trang chủ
               </a>
@@ -355,7 +374,7 @@ const ManageActivities = () => {
             <li>
               <a
                 href="/manage_activities"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
+                className="px-3 py-2 font-semibold hover:underline"
               >
                 Quản lý hoạt động
               </a>
@@ -363,7 +382,7 @@ const ManageActivities = () => {
             <li>
               <a
                 href="/manage_attendance"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
+                className="px-3 py-2 font-semibold hover:underline"
               >
                 Điểm danh
               </a>
@@ -371,15 +390,15 @@ const ManageActivities = () => {
             <li>
               <a
                 href="/manage_scores"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
+                className="px-3 py-2 font-semibold hover:underline"
               >
-                Điểm rèn luyện
+                Danh sách đăng ký
               </a>
             </li>
             <li>
               <a
                 href="/statistics"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
+                className="px-3 py-2 font-semibold hover:underline"
               >
                 Thống kê
               </a>
@@ -387,7 +406,7 @@ const ManageActivities = () => {
             <li>
               <a
                 href="/admin_profile"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
+                className="px-3 py-2 font-semibold hover:underline"
               >
                 Tài khoản
               </a>
@@ -405,7 +424,7 @@ const ManageActivities = () => {
       </header>
 
       {/* Main Content */}
-      <main className="m-[20px] flex-grow">
+      <main className="m-[20px]">
         <h2 className="text-2xl font-semibold text-[#1a237e] mb-6">
           Danh sách hoạt động
         </h2>
@@ -474,10 +493,9 @@ const ManageActivities = () => {
                       Số lượng tối đa
                     </th>
                     <th className="p-3 text-left font-semibold">
-                      Điểm rèn luyện
+                      Danh sách đăng ký
                     </th>
                     <th className="p-3 text-left font-semibold">Điểm CTXH</th>
-                    <th className="p-3 text-left font-semibold">Khách mời</th>
                     <th className="p-3 text-left font-semibold">Trạng thái</th>
                     <th className="p-3 text-left font-semibold">Ảnh</th>
                     <th className="p-3 text-left font-semibold">Hành động</th>
@@ -548,51 +566,33 @@ const ManageActivities = () => {
                             {activity.socialWorkPoints} điểm
                           </span>
                         </td>
-                        <td className="p-3 text-sm max-w-48">
-                          {!activity.guests || activity.guests.length === 0 ? (
-                            <span className="text-sm text-gray-600">Không</span>
-                          ) : (
-                            <div className="space-y-1">
-                              {activity.guests
-                                .slice(0, 2)
-                                .map((guest, index) => (
-                                  <div
-                                    key={index}
-                                    className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded truncate"
-                                    title={`${guest.name} - ${guest.position}`}
-                                  >
-                                    {guest.name} - {guest.position}
-                                  </div>
-                                ))}
-                              {activity.guests.length > 2 && (
-                                <div className="text-xs text-gray-500">
-                                  +{activity.guests.length - 2} khác
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </td>
                         <td className="p-3 text-sm">
                           <label className="flex items-center cursor-pointer">
                             <input
                               type="checkbox"
-                              checked={activity.status}
+                              checked={activity.status && !isExpired}
                               onChange={() =>
+                                !isExpired &&
                                 toggleActivityStatus(
                                   activity.id,
                                   activity.status
                                 )
                               }
                               className="sr-only"
+                              disabled={isExpired}
                             />
                             <div
                               className={`relative w-10 h-6 rounded-full transition-colors ${
-                                activity.status ? "bg-green-500" : "bg-gray-300"
+                                activity.status && !isExpired
+                                  ? "bg-green-500"
+                                  : "bg-gray-300"
+                              } ${
+                                isExpired ? "opacity-50 cursor-not-allowed" : ""
                               }`}
                             >
                               <div
                                 className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                                  activity.status
+                                  activity.status && !isExpired
                                     ? "translate-x-4"
                                     : "translate-x-0"
                                 }`}
@@ -616,9 +616,18 @@ const ManageActivities = () => {
                               <Eye className="h-4 w-4" />
                             </button>
                             <button
-                              onClick={() => handleEdit(activity)}
-                              className="text-blue-600 hover:text-blue-800 p-1"
-                              title="Sửa"
+                              onClick={() => !isExpired && handleEdit(activity)}
+                              className={`p-1 ${
+                                isExpired
+                                  ? "text-gray-400 cursor-not-allowed"
+                                  : "text-blue-600 hover:text-blue-800"
+                              }`}
+                              title={
+                                isExpired
+                                  ? "Không thể sửa (hết hạn đăng ký)"
+                                  : "Sửa"
+                              }
+                              disabled={isExpired}
                             >
                               <Edit className="h-4 w-4" />
                             </button>
@@ -727,7 +736,7 @@ const ManageActivities = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block font-medium mb-1">
-                        Điểm rèn luyện
+                        Danh sách đăng ký
                       </label>
                       <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
                         {formData.trainingPoints} điểm
@@ -891,7 +900,7 @@ const ManageActivities = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block font-medium mb-1">
-                        Điểm rèn luyện *
+                        Danh sách đăng ký *
                       </label>
                       <input
                         type="number"
@@ -903,7 +912,7 @@ const ManageActivities = () => {
                           }))
                         }
                         className="w-full border border-gray-300 rounded px-3 py-2"
-                        placeholder="Số điểm rèn luyện"
+                        placeholder="Số Danh sách đăng ký"
                         required
                       />
                     </div>
@@ -1055,7 +1064,7 @@ const ManageActivities = () => {
 
       {/* Footer */}
       <footer className="bg-[#1a237e] text-white text-center py-4 mt-12 text-sm">
-        © 2025 Khoa Công nghệ thông tin. All rights reserved.
+        © 2025 Công Nghệ Thông Tin. All rights reserved.
       </footer>
     </div>
   );

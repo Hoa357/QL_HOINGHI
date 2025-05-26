@@ -1,162 +1,208 @@
-import React, { useEffect, useState } from "react";
-import { Html5Qrcode } from "html5-qrcode";
-import { QRCodeCanvas } from "qrcode.react";
-import { auth, db } from "../../services/firebase";
+import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
-export default function QRCheckInPage() {
-  const [activityId, setActivityId] = useState("");
-  const [qrCodeValue, setQrCodeValue] = useState("");
-  const [scanResult, setScanResult] = useState("");
-  const [html5QrCode, setHtml5QrCode] = useState(null);
+const QRCheckin = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const activityId = searchParams.get("activity");
 
-  const handleGenerateQRCode = () => {
-    if (activityId.trim() === "") {
-      alert("Vui lòng nhập mã hoạt động!");
-      return;
-    }
-    setQrCodeValue(activityId);
+  const activities = {
+    1: { title: "Hội thảo Công nghệ AI", type: "Hội thảo" },
+    2: { title: "Workshop React Advanced", type: "Workshop" },
+    3: { title: "Seminar Blockchain", type: "Seminar" },
   };
+
+  const activity = activities[activityId];
+  const [qrCreatedAt] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [isExpired, setIsExpired] = useState(false);
+
+  const qrData = `attendance:${activityId}:${qrCreatedAt.getTime()}`;
+  const expiryTime = new Date(qrCreatedAt.getTime() + 60 * 60 * 1000); // 1 hour
 
   useEffect(() => {
-    const qrCodeScanner = new Html5Qrcode("preview");
-    setHtml5QrCode(qrCodeScanner);
+    const timer = setInterval(() => {
+      const now = new Date();
+      setCurrentTime(now);
 
-    Html5Qrcode.getCameras()
-      .then((devices) => {
-        if (devices && devices.length > 0) {
-          qrCodeScanner.start(
-            devices[0].id,
-            { fps: 10, qrbox: 250 },
-            (decodedText) => {
-              setScanResult(`Đã quét: ${decodedText}`);
-              qrCodeScanner.stop();
-            },
-            () => {}
-          );
-        }
-      })
-      .catch((err) => console.error(err));
+      if (now.getTime() - qrCreatedAt.getTime() > 60 * 60 * 1000) {
+        setIsExpired(true);
+      }
+    }, 1000);
 
-    return () => {
-      if (html5QrCode) html5QrCode.stop().catch(() => {});
-    };
-  }, []);
+    return () => clearInterval(timer);
+  }, [qrCreatedAt]);
 
-  const handleLogout = async () => {
-    await auth.signOut();
-    window.location.href = "/login";
-  };
+  const remainingTime = Math.max(
+    0,
+    expiryTime.getTime() - currentTime.getTime()
+  );
+  const remainingMinutes = Math.floor(remainingTime / (1000 * 60));
+  const remainingSeconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+  if (!activity) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white rounded-lg shadow p-8 text-center">
+          <p className="text-red-500 mb-4">Không tìm thấy hoạt động</p>
+          <button
+            onClick={() => navigate("/")}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Quay lại
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-indigo-900 text-white px-6 py-4 flex justify-between flex-wrap items-center">
+      <header className="bg-blue-900 text-white px-6 py-4">
         <div className="flex items-center gap-3">
-          <img src="assets/images/logo.png" alt="Logo" className="w-10 h-10" />
-          <h1 className="text-lg font-bold">Khoa Công Nghệ Thông Tin</h1>
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 px-3 py-1 text-white hover:bg-blue-800 rounded"
+          >
+            ← Quay lại
+          </button>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+              <span className="text-blue-900 font-bold">HUIT</span>
+            </div>
+            <h1 className="text-xl font-bold">Điểm danh QR Code</h1>
+          </div>
         </div>
-        <nav>
-          <ul className="flex flex-wrap gap-3 items-center ">
-            <li>
-              <a
-                href="admin_dashboard"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
-              >
-                Trang chủ
-              </a>
-            </li>
-            <li>
-              <a
-                href="manage_activities"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
-              >
-                Quản lý hoạt động
-              </a>
-            </li>
-            <li>
-              <a
-                href="/manage_attendance"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
-              >
-                Điểm danh
-              </a>
-            </li>
-            <li>
-              <a
-                href="manage_scores"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
-              >
-                Điểm rèn luyện
-              </a>
-            </li>
-            <li>
-              <a
-                href="statistics"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
-              >
-                Thống kê
-              </a>
-            </li>
-            <li>
-              <a
-                href="admin_profile"
-                className="px-3 py-2 font-semibold hover:no-no-underline"
-              >
-                Tài khoản
-              </a>
-            </li>
-            <li>
-              <a
-                href="/login"
-                className="px-3 py-2 bg-indigo-600 rounded font-semibold"
-              >
-                Đăng xuất
-              </a>
-            </li>
-          </ul>
-        </nav>
       </header>
 
-      <main className="flex-grow flex-1 p-6 grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-        <section className="bg-white p-6 rounded-2xl shadow">
-          <h2 className="text-xl font-bold text-[#1a237e] mb-4">
-            Tạo mã QR cho hoạt động
-          </h2>
-          <input
-            type="text"
-            placeholder="Nhập mã hoạt động (ID)"
-            value={activityId}
-            onChange={(e) => setActivityId(e.target.value)}
-            className="w-full p-3 border rounded mb-4"
-          />
-          <button
-            onClick={handleGenerateQRCode}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Tạo mã QR
-          </button>
-          <div className="mt-6 flex justify-center">
-            {qrCodeValue && <QRCodeCanvas value={qrCodeValue} size={200} />}
+      <main className="max-w-2xl mx-auto p-6">
+        <div className="bg-white rounded-lg shadow">
+          <div className="text-center p-6 border-b">
+            <h2 className="text-2xl font-bold text-blue-900">
+              {activity.title}
+            </h2>
+            <p className="text-gray-600">{activity.type}</p>
           </div>
-        </section>
 
-        <section className="bg-white p-6 rounded-2xl shadow">
-          <h2 className="text-xl font-bold text-[#1a237e] mb-4">
-            Quét mã QR để điểm danh
-          </h2>
-          <div
-            id="preview"
-            className="w-full max-w-md mx-auto border rounded"
-          />
-          <p className="mt-4 text-center text-gray-700">
-            {scanResult || "Chưa có dữ liệu quét"}
-          </p>
-        </section>
+          <div className="p-6 text-center space-y-6">
+            {/* QR Code or Logo */}
+            <div className="flex justify-center">
+              <div className="p-6 bg-white rounded-lg shadow-lg border-2 border-blue-200">
+                {!isExpired ? (
+                  <div className="w-64 h-64 bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300">
+                    <div className="text-center">
+                      <div className="text-6xl mb-2">📱</div>
+                      <p className="text-sm text-gray-600">
+                        QR Code sẽ hiển thị ở đây
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Data: {qrData}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-64 h-64 bg-gray-100 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-6xl mb-2">🏫</div>
+                      <p className="text-sm text-gray-600">HUIT Logo</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+       
+            {!isExpired ? (
+              <>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Hướng dẫn điểm danh</h3>
+                  <div className="text-left space-y-3 bg-blue-50 p-4 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                        1
+                      </span>
+                      <span>Sinh viên mở app điểm danh trên điện thoại</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                        2
+                      </span>
+                      <span>Quét mã QR này bằng camera</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                        3
+                      </span>
+                      <span>Hệ thống sẽ tự động ghi nhận điểm danh</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div className="flex items-center justify-center gap-2 text-yellow-800">
+                    <span className="text-lg">⏰</span>
+                    <span className="font-semibold">
+                      Thời gian còn lại: {remainingMinutes}:
+                      {remainingSeconds.toString().padStart(2, "0")}
+                    </span>
+                  </div>
+                  <div className="text-sm text-yellow-700 mt-2 space-y-1">
+                    <p>
+                      • Điểm danh trong 15 phút đầu: <strong>Có mặt</strong>
+                    </p>
+                    <p>
+                      • Điểm danh từ 15-30 phút: <strong>Chờ xử lý</strong>
+                    </p>
+                    <p>
+                      • Sau 30 phút: <strong>Vắng mặt</strong>
+                    </p>
+                    <p>
+                      • Sau 1 giờ: <strong>Mã QR hết hạn</strong>
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="space-y-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-center justify-center gap-2 text-red-800">
+                    <span className="text-lg">⚠️</span>
+                    <span className="font-semibold">Mã QR đã hết hạn</span>
+                  </div>
+                  <p className="text-sm text-red-700 mt-2">
+                    Mã QR đã hết hạn sau 1 giờ. Vui lòng tạo mã QR mới để tiếp
+                    tục điểm danh.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => navigate("/")}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors"
+              >
+                Quay lại danh sách
+              </button>
+              <button
+                onClick={() => window.location.reload()}
+                disabled={!isExpired}
+                className={`px-4 py-2 rounded transition-colors ${
+                  isExpired
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                📱 {isExpired ? "Tạo mã QR mới" : "Làm mới"}
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
-
-      <footer className="text-center text-white bg-[#1a237e] py-4 text-sm mt-6">
-        &copy; 2025 Khoa Công Nghệ Thông Tin - HUIT
-      </footer>
     </div>
   );
-}
+};
+
+export default QRCheckin;

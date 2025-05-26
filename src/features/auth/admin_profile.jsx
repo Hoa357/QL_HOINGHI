@@ -189,7 +189,7 @@ export default function AdminProfile() {
       <header className="bg-indigo-900 text-white px-6 py-4 flex justify-between flex-wrap items-center">
         <div className="flex items-center gap-3">
           <img src="assets/images/logo.png" alt="Logo" className="w-10 h-10" />
-          <h1 className="text-lg font-bold">Khoa Công Nghệ Thông Tin</h1>
+          <h1 className="text-lg font-bold">Công Nghệ Thông Tin</h1>
         </div>
         <nav>
           <ul className="flex flex-wrap gap-3 items-center">
@@ -222,7 +222,7 @@ export default function AdminProfile() {
                 href="manage_scores"
                 className="px-3 py-2 font-semibold hover:underline"
               >
-                Điểm rèn luyện
+                Danh sách đăng ký
               </a>
             </li>
             <li>
@@ -263,7 +263,7 @@ export default function AdminProfile() {
             <h2 className="text-3xl font-bold text-indigo-900 mb-2">
               Thông tin tài khoản
             </h2>
-            <p className="text-gray-600">Quản lý thông tin cá nhân của bạn</p>
+          
           </div>
 
           {/* Thông tin cơ bản */}
@@ -536,7 +536,7 @@ export default function AdminProfile() {
 
       {/* Footer */}
       <footer className="text-center py-4 bg-indigo-900 text-white text-sm select-none">
-        &copy; 2025 Khoa Công Nghệ Thông Tin - HUIT
+        &copy; 2025 Công Nghệ Thông Tin - HUIT
       </footer>
     </div>
   );

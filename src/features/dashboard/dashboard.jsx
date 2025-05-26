@@ -84,7 +84,7 @@ export default function AdminDashboard() {
                 href="manage_scores"
                 className="px-3 py-2 font-semibold hover:no-no-underline"
               >
-                Điểm rèn luyện
+                Danh sách đăng ký
               </a>
             </li>
             <li>
@@ -162,10 +162,10 @@ export default function AdminDashboard() {
 
           <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-lg transition duration-300 flex flex-col justify-between min-h-[250px]">
             <h3 className="text-indigo-900 text-xl font-semibold mb-3">
-              🎯 Điểm rèn luyện
+              🎯 Danh sách đăng ký
             </h3>
             <p className="text-gray-600 flex-grow mb-4">
-              Xem và cộng/trừ điểm rèn luyện sinh viên.
+              Xem và cộng/trừ Danh sách đăng ký sinh viên.
             </p>
             <a
               href="/manage_scores"
