@@ -60,7 +60,7 @@ export default function QRCheckInPage() {
             <li>
               <a
                 href="admin_dashboard"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Trang chủ
               </a>
@@ -68,7 +68,7 @@ export default function QRCheckInPage() {
             <li>
               <a
                 href="manage_activities"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Quản lý hoạt động
               </a>
@@ -76,7 +76,7 @@ export default function QRCheckInPage() {
             <li>
               <a
                 href="/manage_attendance"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Điểm danh
               </a>
@@ -84,7 +84,7 @@ export default function QRCheckInPage() {
             <li>
               <a
                 href="manage_scores"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Điểm rèn luyện
               </a>
@@ -92,7 +92,7 @@ export default function QRCheckInPage() {
             <li>
               <a
                 href="statistics"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Thống kê
               </a>
@@ -100,7 +100,7 @@ export default function QRCheckInPage() {
             <li>
               <a
                 href="admin_profile"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Tài khoản
               </a>
@@ -117,7 +117,7 @@ export default function QRCheckInPage() {
         </nav>
       </header>
 
-      <main className="flex-1 p-6 grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+      <main className="flex-grow flex-1 p-6 grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
         <section className="bg-white p-6 rounded-2xl shadow">
           <h2 className="text-xl font-bold text-[#1a237e] mb-4">
             Tạo mã QR cho hoạt động

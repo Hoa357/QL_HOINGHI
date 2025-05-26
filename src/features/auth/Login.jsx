@@ -56,59 +56,72 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-center text-2xl font-bold text-indigo-900 mb-6">
-          Đăng nhập hệ thống
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label
-              htmlFor="manv"
-              className="block mb-1 text-gray-700 font-semibold"
+    <div
+      className="min-h-screen bg-cover bg-center flex items-center justify-center"
+      style={{ backgroundImage: 'url("assets/images/background.png")' }}
+    >
+      <div className="flex  justify-around bg-white p-10 rounded-lg shadow-md w-[55%] ">
+        <div>
+          <h2 className="text-center text-2xl font-bold text-indigo-900 mb-6">
+            Đăng nhập hệ thống
+          </h2>
+          <img src="assets/images/dn_bak_Nho.png"></img>
+        </div>
+
+        <div className="w-[47%]">
+          <img
+            src="assets/images/logo.png"
+            className="w-[100px] items-center ml-16 mb-3"
+          ></img>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label
+                htmlFor="manv"
+                className="block mb-2 text-gray-500 font-semibold"
+              >
+                Mã nhân viên
+              </label>
+              <input
+                type="text"
+                id="manv"
+                value={manv}
+                onChange={(e) => setManv(e.target.value)}
+                placeholder="Nhập mã nhân viên"
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-full text-base focus:outline-none focus:border-indigo-700 transition"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block mb-2 text-gray-500 font-semibold"
+              >
+                Mật khẩu
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Nhập mật khẩu"
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-full text-base focus:outline-none focus:border-indigo-700 transition"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="mt-11 w-full bg-indigo-600 text-white py-2 rounded-full text-lg font-semibold hover:bg-indigo-700 transition"
             >
-              Mã nhân viên
-            </label>
-            <input
-              type="text"
-              id="manv"
-              value={manv}
-              onChange={(e) => setManv(e.target.value)}
-              placeholder="Nhập mã nhân viên"
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md text-base focus:outline-none focus:border-indigo-700 transition"
-            />
-          </div>
+              Đăng nhập
+            </button>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block mb-1 text-gray-700 font-semibold"
-            >
-              Mật khẩu
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Nhập mật khẩu"
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md text-base focus:outline-none focus:border-indigo-700 transition"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition"
-          >
-            Đăng nhập
-          </button>
-
-          <p className="text-red-600 text-center mt-3 min-h-[1.5rem]">
-            {errorMessage}
-          </p>
-        </form>
+            <p className="text-red-600 text-center mt-3 min-h-[1.5rem]">
+              {errorMessage}
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

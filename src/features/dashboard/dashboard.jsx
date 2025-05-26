@@ -58,7 +58,7 @@ export default function AdminDashboard() {
             <li>
               <a
                 href="admin_dashboard"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Trang chủ
               </a>
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
             <li>
               <a
                 href="manage_activities"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Quản lý hoạt động
               </a>
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
             <li>
               <a
                 href="manage_attendance.html"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Điểm danh
               </a>
@@ -82,7 +82,7 @@ export default function AdminDashboard() {
             <li>
               <a
                 href="manage_scores"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Điểm rèn luyện
               </a>
@@ -90,7 +90,7 @@ export default function AdminDashboard() {
             <li>
               <a
                 href="statistics"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Thống kê
               </a>
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
             <li>
               <a
                 href="admin_profile"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Tài khoản
               </a>
@@ -119,7 +119,7 @@ export default function AdminDashboard() {
         <section className="mb-12">
           <h2 className="text-indigo-900 font-bold text-3xl">
             Chào mừng bạn trở lại,{" "}
-            <span id="adminName" className="underline">
+            <span id="adminName" className="no-underline">
               {adminName}
             </span>
             !
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
-          <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300 flex flex-col justify-between min-h-[250px]">
+          <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-lg transition duration-300 flex flex-col justify-between min-h-[250px]">
             <h3 className="text-indigo-900 text-xl font-semibold mb-3">
               📅 Quản lý hoạt động
             </h3>
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
             </a>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300 flex flex-col justify-between min-h-[250px]">
+          <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-lg transition duration-300 flex flex-col justify-between min-h-[250px]">
             <h3 className="text-indigo-900 text-xl font-semibold mb-3">
               📋 Điểm danh & xác nhận
             </h3>
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
             </a>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300 flex flex-col justify-between min-h-[250px]">
+          <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-lg transition duration-300 flex flex-col justify-between min-h-[250px]">
             <h3 className="text-indigo-900 text-xl font-semibold mb-3">
               🎯 Điểm rèn luyện
             </h3>
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
             </a>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300 flex flex-col justify-between min-h-[250px]">
+          <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-lg transition duration-300 flex flex-col justify-between min-h-[250px]">
             <h3 className="text-indigo-900 text-xl font-semibold mb-3">
               📊 Thống kê
             </h3>

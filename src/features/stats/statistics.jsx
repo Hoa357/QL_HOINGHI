@@ -135,7 +135,7 @@ export default function Statistics() {
   }, [db]);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <header className="bg-indigo-900 text-white px-6 py-4 flex justify-between flex-wrap items-center">
         <div className="flex items-center gap-3">
@@ -147,7 +147,7 @@ export default function Statistics() {
             <li>
               <a
                 href="admin_dashboard"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-no-underline"
               >
                 Trang chủ
               </a>
@@ -155,7 +155,7 @@ export default function Statistics() {
             <li>
               <a
                 href="manage_activities"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-no-underline"
               >
                 Quản lý hoạt động
               </a>
@@ -163,7 +163,7 @@ export default function Statistics() {
             <li>
               <a
                 href="/manage_attendance"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-no-underline"
               >
                 Điểm danh
               </a>
@@ -171,7 +171,7 @@ export default function Statistics() {
             <li>
               <a
                 href="manage_scores"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-no-underline"
               >
                 Điểm rèn luyện
               </a>
@@ -179,7 +179,7 @@ export default function Statistics() {
             <li>
               <a
                 href="statistics"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-no-underline"
               >
                 Thống kê
               </a>
@@ -187,7 +187,7 @@ export default function Statistics() {
             <li>
               <a
                 href="admin_profile"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-no-underline"
               >
                 Tài khoản
               </a>
@@ -204,50 +204,55 @@ export default function Statistics() {
         </nav>
       </header>
 
-      <h2 className="text-3xl font-semibold mb-8 text-center text-indigo-900">
-        Tổng quan
-      </h2>
+      <main className="flex-grow">
+        <h2 className="text-3xl font-semibold mb-8 text-center text-indigo-900">
+          Tổng quan
+        </h2>
 
-      <div className="flex flex-wrap gap-6 justify-center mb-12">
-        <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[220px] text-center">
-          <h3 className="text-xl font-semibold text-indigo-800 mb-2">
-            Tổng số hoạt động
-          </h3>
-          <p className="text-3xl font-bold text-gray-800">
-            {totalActivities} hoạt động
-          </p>
-        </div>
-        <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[220px] text-center">
-          <h3 className="text-xl font-semibold text-indigo-800 mb-2">
-            Tổng lượt tham gia
-          </h3>
-          <p className="text-3xl font-bold text-gray-800">
-            {totalParticipants} lượt tham gia
-          </p>
-        </div>
-        <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[220px] text-center">
-          <h3 className="text-xl font-semibold text-indigo-800 mb-2">
-            Điểm trung bình
-          </h3>
-          <p className="text-3xl font-bold text-gray-800">{avgScore} điểm</p>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-8 justify-center">
-        <div className="bg-white rounded-lg shadow p-6 w-full md:w-[48%]">
-          <h3 className="text-2xl font-semibold mb-4 text-indigo-800">
-            Số hoạt động mỗi tháng
-          </h3>
-          <canvas ref={monthlyChartRef} />
+        <div className="flex flex-wrap gap-6 justify-center mb-12">
+          <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[220px] text-center">
+            <h3 className="text-xl font-semibold text-indigo-800 mb-2">
+              Tổng số hoạt động
+            </h3>
+            <p className="text-3xl font-bold text-gray-800">
+              {totalActivities} hoạt động
+            </p>
+          </div>
+          <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[220px] text-center">
+            <h3 className="text-xl font-semibold text-indigo-800 mb-2">
+              Tổng lượt tham gia
+            </h3>
+            <p className="text-3xl font-bold text-gray-800">
+              {totalParticipants} lượt tham gia
+            </p>
+          </div>
+          <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[220px] text-center">
+            <h3 className="text-xl font-semibold text-indigo-800 mb-2">
+              Điểm trung bình
+            </h3>
+            <p className="text-3xl font-bold text-gray-800">{avgScore} điểm</p>
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6 w-full md:w-[48%]">
-          <h3 className="text-2xl font-semibold mb-4 text-indigo-800">
-            Top hoạt động có nhiều sinh viên tham gia
-          </h3>
-          <canvas ref={topActivitiesChartRef} />
+        <div className="flex flex-wrap gap-8 justify-center">
+          <div className="bg-white rounded-lg shadow p-6 w-full md:w-[48%]">
+            <h3 className="text-2xl font-semibold mb-4 text-indigo-800">
+              Số hoạt động mỗi tháng
+            </h3>
+            <canvas ref={monthlyChartRef} />
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6 w-full md:w-[48%]">
+            <h3 className="text-2xl font-semibold mb-4 text-indigo-800">
+              Top hoạt động có nhiều sinh viên tham gia
+            </h3>
+            <canvas ref={topActivitiesChartRef} />
+          </div>
         </div>
-      </div>
+      </main>
+      <footer className="text-center text-white bg-[#1a237e] py-4 text-sm mt-6">
+        &copy; 2025 Khoa Công Nghệ Thông Tin - HUIT
+      </footer>
     </div>
   );
 }

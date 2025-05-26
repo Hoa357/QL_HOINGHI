@@ -85,7 +85,7 @@ export default function ManageAttendance() {
             <li>
               <a
                 href="admin_dashboard"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Trang chủ
               </a>
@@ -93,7 +93,7 @@ export default function ManageAttendance() {
             <li>
               <a
                 href="manage_activities"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Quản lý hoạt động
               </a>
@@ -101,7 +101,7 @@ export default function ManageAttendance() {
             <li>
               <a
                 href="/manage_attendance"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Điểm danh
               </a>
@@ -109,7 +109,7 @@ export default function ManageAttendance() {
             <li>
               <a
                 href="manage_scores"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Điểm rèn luyện
               </a>
@@ -117,7 +117,7 @@ export default function ManageAttendance() {
             <li>
               <a
                 href="statistics"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Thống kê
               </a>
@@ -125,7 +125,7 @@ export default function ManageAttendance() {
             <li>
               <a
                 href="admin_profile"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-no-underline"
               >
                 Tài khoản
               </a>
@@ -142,7 +142,7 @@ export default function ManageAttendance() {
         </nav>
       </header>
 
-      <main className="max-w-5xl mx-auto bg-white mt-6 p-6 rounded shadow">
+      <main className="flex-grow max-w-5xl mx-auto bg-white mt-6 p-6 rounded shadow ">
         <h2 className="text-2xl font-semibold text-indigo-900 mb-4">
           Quản lý điểm danh và xác nhận sinh viên
         </h2>

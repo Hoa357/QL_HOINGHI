@@ -40,7 +40,7 @@ const ManageScoresPage = () => {
   };
 
   return (
-    <div className="page-container">
+    <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <header className="bg-indigo-900 text-white px-6 py-4 flex justify-between flex-wrap items-center">
         <div className="flex items-center gap-3">
@@ -52,7 +52,7 @@ const ManageScoresPage = () => {
             <li>
               <a
                 href="admin_dashboard"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-underline"
               >
                 Trang chủ
               </a>
@@ -60,7 +60,7 @@ const ManageScoresPage = () => {
             <li>
               <a
                 href="manage_activities"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-underline"
               >
                 Quản lý hoạt động
               </a>
@@ -68,7 +68,7 @@ const ManageScoresPage = () => {
             <li>
               <a
                 href="/manage_attendance"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-underline"
               >
                 Điểm danh
               </a>
@@ -76,7 +76,7 @@ const ManageScoresPage = () => {
             <li>
               <a
                 href="manage_scores"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-underline"
               >
                 Điểm rèn luyện
               </a>
@@ -84,7 +84,7 @@ const ManageScoresPage = () => {
             <li>
               <a
                 href="statistics"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-underline"
               >
                 Thống kê
               </a>
@@ -92,7 +92,7 @@ const ManageScoresPage = () => {
             <li>
               <a
                 href="admin_profile"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:no-underline"
               >
                 Tài khoản
               </a>
@@ -110,7 +110,7 @@ const ManageScoresPage = () => {
       </header>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+      <main className="flex-grow overflow-x-auto bg-white shadow-md rounded-lg">
         <table className="min-w-full table-auto">
           <thead className="bg-indigo-600 text-white">
             <tr>
@@ -140,7 +140,7 @@ const ManageScoresPage = () => {
             )}
           </tbody>
         </table>
-      </div>
+      </main>
 
       {/* Footer */}
       <footer className="bg-indigo-700 text-white text-center py-3 mt-6">
