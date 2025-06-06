@@ -207,7 +207,7 @@ const AttendanceManagement = () => {
             <li>
               <a
                 href="/admin_dashboard"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:text-blue-500 "
               >
                 Trang chủ
               </a>
@@ -215,47 +215,34 @@ const AttendanceManagement = () => {
             <li>
               <a
                 href="/manage_activities"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Quản lý hoạt động
               </a>
             </li>
-            <li>
-              <a
-                href="/manage_attendance"
-                className="px-3 py-2 font-semibold hover:underline"
-              >
-                Điểm danh
-              </a>
-            </li>
+
             <li>
               <a
                 href="/manage_scores"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Danh sách đăng ký
               </a>
             </li>
             <li>
-              <a
-                href="/statistics"
-                className="px-3 py-2 font-semibold hover:underline"
-              >
+              <a href="/statistics" className="px-3 py-2 font-semibold ">
                 Thống kê
               </a>
             </li>
             <li>
-              <a
-                href="/admin_profile"
-                className="px-3 py-2 font-semibold hover:underline"
-              >
+              <a href="/admin_profile" className="px-3 py-2 font-semibold ">
                 Tài khoản
               </a>
             </li>
             <li>
               <a
                 href="/login"
-                className="px-3 py-2 bg-indigo-600 rounded font-semibold hover:bg-indigo-700"
+                className="px-3 py-2 bg-indigo-600 rounded font-semibold hover:text-blue-500:bg-indigo-700"
               >
                 Đăng xuất
               </a>
@@ -351,7 +338,7 @@ const AttendanceManagement = () => {
                         onClick={() =>
                           handleStartAttendance(activity.id, activity.title)
                         }
-                        className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition-colors"
+                        className="flex items-center gap-2 bg-green-600 hover:text-blue-500:bg-green-700 text-white px-4 py-2 rounded-md transition-colors"
                       >
                         Điểm danh
                       </button>
@@ -424,7 +411,7 @@ const AttendanceManagement = () => {
                                             true
                                           )
                                         }
-                                        className="px-3 py-1 text-xs bg-green-100 text-green-800 border border-green-300 rounded hover:bg-green-200 transition-colors"
+                                        className="px-3 py-1 text-xs bg-green-100 text-green-800 border border-green-300 rounded hover:text-blue-500:bg-green-200 transition-colors"
                                       >
                                         Duyệt
                                       </button>
@@ -435,7 +422,7 @@ const AttendanceManagement = () => {
                                             false
                                           )
                                         }
-                                        className="px-3 py-1 text-xs bg-red-100 text-red-800 border border-red-300 rounded hover:bg-red-200 transition-colors"
+                                        className="px-3 py-1 text-xs bg-red-100 text-red-800 border border-red-300 rounded hover:text-blue-500:bg-red-200 transition-colors"
                                       >
                                         Từ chối
                                       </button>
@@ -504,13 +491,13 @@ const AttendanceManagement = () => {
                       activityTitle: "",
                     })
                   }
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:text-blue-500:bg-gray-50 transition-colors"
                 >
                   Hủy
                 </button>
                 <button
                   onClick={confirmStartAttendance}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:text-blue-500:bg-blue-700 transition-colors"
                 >
                   Xác nhận - Bắt đầu điểm danh
                 </button>

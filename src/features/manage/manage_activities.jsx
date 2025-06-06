@@ -366,7 +366,7 @@ const ManageActivities = () => {
             <li>
               <a
                 href="/admin_dashboard"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Trang chủ
               </a>
@@ -374,23 +374,16 @@ const ManageActivities = () => {
             <li>
               <a
                 href="/manage_activities"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Quản lý hoạt động
               </a>
             </li>
-            <li>
-              <a
-                href="/manage_attendance"
-                className="px-3 py-2 font-semibold hover:underline"
-              >
-                Điểm danh
-              </a>
-            </li>
+
             <li>
               <a
                 href="/manage_scores"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Danh sách đăng ký
               </a>
@@ -398,25 +391,85 @@ const ManageActivities = () => {
             <li>
               <a
                 href="/statistics"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Thống kê
               </a>
             </li>
+            {/* --- ICON THƯ --- */}
+            <li>
+              <a
+                href="/admin_dashboard"
+                title="Tin nhắn" // Thêm title để người dùng biết icon này làm gì
+                className="px-3 py-2 font-semibold hover:text-blue-500"
+              >
+                {/* SVG cho icon Thư */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                  />
+                </svg>
+                <span className="sr-only">Tin nhắn</span>{" "}
+                {/* Để hỗ trợ screen reader */}
+              </a>
+            </li>
+            {/* --- ICON NGƯỜI DÙNG --- */}
             <li>
               <a
                 href="/admin_profile"
-                className="px-3 py-2 font-semibold hover:underline"
+                title="Hồ sơ"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
-                Tài khoản
+                {/* SVG cho icon Người dùng */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+                <span className="sr-only">Hồ sơ người dùng</span>
               </a>
             </li>
+            {/* --- ICON ĐĂNG XUẤT --- */}
             <li>
               <a
                 href="/login"
-                className="px-3 py-2 bg-indigo-600 rounded font-semibold hover:bg-indigo-700"
+                title="Đăng xuất"
+                className="px-3 py-2 bg-indigo-600 rounded font-semibold hover:bg-indigo-700 flex items-center"
               >
-                Đăng xuất
+                {/* SVG cho icon Đăng xuất */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+                  />
+                </svg>
+                <span className="sr-only">Đăng xuất</span>
               </a>
             </li>
           </ul>
@@ -493,7 +546,7 @@ const ManageActivities = () => {
                       Số lượng tối đa
                     </th>
                     <th className="p-3 text-left font-semibold">
-                      Danh sách đăng ký
+                      Điểm rèn luyện
                     </th>
                     <th className="p-3 text-left font-semibold">Điểm CTXH</th>
                     <th className="p-3 text-left font-semibold">Trạng thái</th>
@@ -686,13 +739,13 @@ const ManageActivities = () => {
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-medium mb-1">Tiêu đề</label>
+                      <label className="block font-small mb-1">Tiêu đề</label>
                       <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
                         {formData.title}
                       </div>
                     </div>
                     <div>
-                      <label className="block font-medium mb-1">
+                      <label className="block font-small mb-1">
                         Số lượng tối đa
                       </label>
                       <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
@@ -702,7 +755,7 @@ const ManageActivities = () => {
                   </div>
 
                   <div>
-                    <label className="block font-medium mb-1">Mô tả</label>
+                    <label className="block font-small mb-1">Mô tả</label>
                     <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50 min-h-[80px]">
                       {formData.description}
                     </div>
@@ -710,7 +763,7 @@ const ManageActivities = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block font-medium mb-1">
+                      <label className="block font-small mb-1">
                         Thời gian bắt đầu
                       </label>
                       <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
@@ -718,7 +771,7 @@ const ManageActivities = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="block font-medium mb-1">
+                      <label className="block font-small mb-1">
                         Hạn đăng ký
                       </label>
                       <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
@@ -726,7 +779,7 @@ const ManageActivities = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="block font-medium mb-1">Địa điểm</label>
+                      <label className="block font-small mb-1">Địa điểm</label>
                       <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
                         {formData.location}
                       </div>
@@ -735,15 +788,15 @@ const ManageActivities = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-medium mb-1">
-                        Danh sách đăng ký
+                      <label className="block font-small mb-1">
+                        Điểm rèn luyện
                       </label>
                       <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
                         {formData.trainingPoints} điểm
                       </div>
                     </div>
                     <div>
-                      <label className="block font-medium mb-1">
+                      <label className="block font-small mb-1">
                         Điểm công tác xã hội
                       </label>
                       <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
@@ -754,7 +807,7 @@ const ManageActivities = () => {
 
                   {formData.guests.length > 0 && (
                     <div>
-                      <label className="block font-medium mb-2">
+                      <label className="block font-small mb-2">
                         Khách mời ({formData.guests.length})
                       </label>
                       <div className="space-y-1">
@@ -786,9 +839,7 @@ const ManageActivities = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-medium mb-1">
-                        Tiêu đề *
-                      </label>
+                      <label className="block font-medium mb-1">Tiêu đề</label>
                       <input
                         type="text"
                         value={formData.title}
@@ -806,7 +857,7 @@ const ManageActivities = () => {
 
                     <div>
                       <label className="block font-medium mb-1">
-                        Số lượng tối đa *
+                        Số lượng tối đa
                       </label>
                       <input
                         type="number"
@@ -825,7 +876,7 @@ const ManageActivities = () => {
                   </div>
 
                   <div>
-                    <label className="block font-medium mb-1">Mô tả *</label>
+                    <label className="block font-medium mb-1">Mô tả </label>
                     <textarea
                       value={formData.description}
                       onChange={(e) =>
@@ -843,7 +894,7 @@ const ManageActivities = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <label className="block font-medium mb-1">
-                        Thời gian bắt đầu *
+                        Thời gian bắt đầu
                       </label>
                       <input
                         type="datetime-local"
@@ -861,7 +912,7 @@ const ManageActivities = () => {
 
                     <div>
                       <label className="block font-medium mb-1">
-                        Hạn đăng ký *
+                        Hạn đăng ký
                       </label>
                       <input
                         type="datetime-local"
@@ -878,9 +929,7 @@ const ManageActivities = () => {
                     </div>
 
                     <div>
-                      <label className="block font-medium mb-1">
-                        Địa điểm *
-                      </label>
+                      <label className="block font-medium mb-1">Địa điểm</label>
                       <input
                         type="text"
                         value={formData.location}
@@ -900,7 +949,7 @@ const ManageActivities = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block font-medium mb-1">
-                        Danh sách đăng ký *
+                        Điểm rèn luyện
                       </label>
                       <input
                         type="number"
@@ -912,14 +961,14 @@ const ManageActivities = () => {
                           }))
                         }
                         className="w-full border border-gray-300 rounded px-3 py-2"
-                        placeholder="Số Danh sách đăng ký"
+                        placeholder="Số điểm rèn luyện"
                         required
                       />
                     </div>
 
                     <div>
                       <label className="block font-medium mb-1">
-                        Điểm công tác xã hội *
+                        Điểm công tác xã hội
                       </label>
                       <input
                         type="number"

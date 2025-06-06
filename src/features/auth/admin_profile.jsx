@@ -196,7 +196,7 @@ export default function AdminProfile() {
             <li>
               <a
                 href="/admin_dashboard"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Trang chủ
               </a>
@@ -204,50 +204,103 @@ export default function AdminProfile() {
             <li>
               <a
                 href="/manage_activities"
-                className="px-3 py-2 font-semibold hover:underline"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Quản lý hoạt động
               </a>
             </li>
+
             <li>
               <a
-                href="/manage_attendance"
-                className="px-3 py-2 font-semibold hover:underline"
-              >
-                Điểm danh
-              </a>
-            </li>
-            <li>
-              <a
-                href="manage_scores"
-                className="px-3 py-2 font-semibold hover:underline"
+                href="/manage_scores"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Danh sách đăng ký
               </a>
             </li>
             <li>
               <a
-                href="statistics"
-                className="px-3 py-2 font-semibold hover:underline"
+                href="/statistics"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
                 Thống kê
               </a>
             </li>
+            {/* --- ICON THƯ --- */}
+            <li>
+              <a
+                href="/admin_dashboard"
+                title="Tin nhắn" // Thêm title để người dùng biết icon này làm gì
+                className="px-3 py-2 font-semibold hover:text-blue-500"
+              >
+                {/* SVG cho icon Thư */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                  />
+                </svg>
+                <span className="sr-only">Tin nhắn</span>{" "}
+                {/* Để hỗ trợ screen reader */}
+              </a>
+            </li>
+            {/* --- ICON NGƯỜI DÙNG --- */}
             <li>
               <a
                 href="/admin_profile"
-                className="px-3 py-2 font-semibold hover:underline"
+                title="Hồ sơ"
+                className="px-3 py-2 font-semibold hover:text-blue-500"
               >
-                Tài khoản
+                {/* SVG cho icon Người dùng */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+                <span className="sr-only">Hồ sơ người dùng</span>
               </a>
             </li>
+            {/* --- ICON ĐĂNG XUẤT --- */}
             <li>
-              <button
-                onClick={logout}
-                className="px-3 py-2 font-semibold hover:bg-white hover:text-indigo-900 rounded transition"
+              <a
+                href="/login"
+                title="Đăng xuất"
+                className="px-3 py-2 bg-indigo-600 rounded font-semibold hover:bg-indigo-700 flex items-center"
               >
-                Đăng xuất
-              </button>
+                {/* SVG cho icon Đăng xuất */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+                  />
+                </svg>
+                <span className="sr-only">Đăng xuất</span>
+              </a>
             </li>
           </ul>
         </nav>
@@ -263,7 +316,6 @@ export default function AdminProfile() {
             <h2 className="text-3xl font-bold text-indigo-900 mb-2">
               Thông tin tài khoản
             </h2>
-          
           </div>
 
           {/* Thông tin cơ bản */}
@@ -333,7 +385,7 @@ export default function AdminProfile() {
                   <div>
                     <p className="text-sm text-gray-500">Chức vụ</p>
                     <p className="font-medium">
-                      {userInfo.position || "(chưa đặt)"}
+                      {userInfo.role || "(chưa đặt)"}
                     </p>
                   </div>
                 </div>
@@ -352,6 +404,23 @@ export default function AdminProfile() {
             ) : (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Họ và tên
+                    </label>
+                    <input
+                      type="text"
+                      value={editingInfo.fullName}
+                      onChange={(e) =>
+                        setEditingInfo({
+                          ...editingInfo,
+                          fullName: e.target.value,
+                        })
+                      }
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="Nhập họ và tên"
+                    />
+                  </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Email (không thể thay đổi)
@@ -374,23 +443,7 @@ export default function AdminProfile() {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-100 text-gray-500"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Họ và tên
-                    </label>
-                    <input
-                      type="text"
-                      value={editingInfo.fullName}
-                      onChange={(e) =>
-                        setEditingInfo({
-                          ...editingInfo,
-                          fullName: e.target.value,
-                        })
-                      }
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="Nhập họ và tên"
-                    />
-                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Ngày sinh
