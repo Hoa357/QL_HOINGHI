@@ -1,7 +1,9 @@
+// File: app/check-in/page.js (hoặc route tương ứng)
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router"; // Sử dụng useRouter cho Pages Router
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../services/firebase";
 import {
   collection,
@@ -11,91 +13,131 @@ import {
   updateDoc,
   doc,
   getDoc,
+  Timestamp,
 } from "firebase/firestore";
 
-const CheckInPage = () => {
-  const [message, setMessage] = useState("");
-  const router = useRouter();
-  const { activityId, token } = router.query; // Lấy query parameters từ router.query
+const CheckInContent = () => {
+  const [message, setMessage] = useState("Đang xử lý, vui lòng chờ...");
+  const [status, setStatus] = useState("loading");
+
+  const searchParams = useSearchParams();
+  const activityId = searchParams.get("activityId");
+  const token = searchParams.get("token");
 
   useEffect(() => {
-    const checkIn = async () => {
+    if (!activityId || !token) {
+      setMessage("URL không hợp lệ. Thiếu thông tin hoạt động hoặc token.");
+      setStatus("error");
+      return;
+    }
+
+    const checkIn = async (user) => {
+      if (!user) {
+        setMessage("Bạn chưa đăng nhập. Vui lòng đăng nhập và quét lại mã QR.");
+        setStatus("error");
+        return;
+      }
+
       try {
-        // Check if user is logged in
-        const user = auth.currentUser;
-        if (!user) {
-          setMessage("Chưa đăng nhập. Vui lòng đăng nhập để điểm danh.");
-          return;
-        }
-        const studentId = user.uid; // Assume studentId is Firebase UID
+        const activityRef = doc(db, "activities", activityId);
+        const activitySnap = await getDoc(activityRef);
 
-        // Validate activity and check-in time
-        const activityDoc = await getDoc(doc(db, "activities", activityId));
-        if (!activityDoc.exists()) {
+        if (!activitySnap.exists()) {
           setMessage("Hoạt động không tồn tại.");
+          setStatus("error");
           return;
         }
-        const { qrToken, qrTokenExpires, checkInStartTime } =
-          activityDoc.data();
 
-        // Check token
+        const activityData = activitySnap.data();
+        const now = new Date();
+
         if (
-          !qrToken ||
-          qrToken !== token ||
-          new Date(qrTokenExpires.toDate()) < new Date()
+          !activityData.qrToken ||
+          activityData.qrToken !== token ||
+          activityData.qrTokenExpires.toDate() < now
         ) {
           setMessage("Mã QR không hợp lệ hoặc đã hết hạn.");
+          setStatus("error");
           return;
         }
 
-        // Check if check-in time is within valid window (5 minutes from checkInStartTime)
-        const now = new Date();
-        const startTime = checkInStartTime ? checkInStartTime.toDate() : null;
-        const endTime = startTime
-          ? new Date(startTime.getTime() + 5 * 60 * 1000)
-          : null;
-        if (!startTime || now < startTime || now > endTime) {
-          setMessage("Thời gian điểm danh không hợp lệ.");
-          return;
-        }
-
-        // Check registration and update attendance
-        const q = query(
-          collection(db, "registrations"),
+        const userId = user.uid;
+        const registrationsQuery = query(
+          collection(db, "activity_registrations"), // Sửa tên collection
           where("activityId", "==", activityId),
-          where("studentId", "==", studentId)
+          where("userId", "==", userId) // Sửa tên field
         );
-        const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-          const registrationDoc = querySnapshot.docs[0];
-          await updateDoc(doc(db, "registrations", registrationDoc.id), {
-            attendance: true,
-            checkInTime: now,
-          });
-          setMessage("Điểm danh thành công!");
-        } else {
-          setMessage("Không tìm thấy đăng ký cho sinh viên này.");
+        const querySnapshot = await getDocs(registrationsQuery);
+
+        if (querySnapshot.empty) {
+          setMessage("Bạn chưa đăng ký tham gia hoạt động này.");
+          setStatus("error");
+          return;
         }
+
+        const registrationDoc = querySnapshot.docs[0];
+
+        if (registrationDoc.data().status === "checkedIn") {
+          setMessage("Bạn đã điểm danh cho hoạt động này rồi.");
+          setStatus("success");
+          return;
+        }
+
+        await updateDoc(doc(db, "activity_registrations", registrationDoc.id), {
+          status: "checkedIn", // Sửa trạng thái
+          checkInTime: Timestamp.now(),
+        });
+
+        setMessage("Điểm danh thành công! Cảm ơn bạn đã tham gia.");
+        setStatus("success");
       } catch (error) {
         console.error("Lỗi điểm danh:", error);
-        setMessage("Không thể điểm danh. Vui lòng thử lại.");
+        setMessage(
+          "Đã xảy ra lỗi trong quá trình điểm danh. Vui lòng thử lại."
+        );
+        setStatus("error");
       }
     };
 
-    // Đảm bảo query parameters đã sẵn sàng trước khi gọi checkIn
-    if (router.isReady && activityId && token) {
-      checkIn();
-    } else if (router.isReady) {
-      setMessage("Thiếu thông tin hoạt động hoặc token.");
-    }
-  }, [router.isReady, activityId, token]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      checkIn(user);
+    });
+
+    return () => unsubscribe();
+  }, [activityId, token]);
+
+  const getStatusColor = () => {
+    if (status === "success") return "text-green-600";
+    if (status === "error") return "text-red-600";
+    return "text-gray-600";
+  };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">Điểm danh</h2>
-      <p className="text-sm text-gray-600">{message}</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="p-8 bg-white rounded-lg shadow-xl text-center max-w-md">
+        <h1 className="text-2xl font-bold text-indigo-800 mb-4">
+          Kết quả Điểm danh
+        </h1>
+        <p className={`text-lg font-semibold ${getStatusColor()}`}>{message}</p>
+        {status !== "loading" && (
+          <a
+            href="/student_dashboard"
+            className="mt-6 inline-block bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 transition"
+          >
+            Về Trang chủ
+          </a>
+        )}
+      </div>
     </div>
+  );
+};
+
+const CheckInPage = () => {
+  return (
+    <Suspense fallback={<div className="text-center p-6">Đang tải...</div>}>
+      <CheckInContent />
+    </Suspense>
   );
 };
 

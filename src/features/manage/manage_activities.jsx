@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react"; // THÊM MỚI: import useMemo
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
   collection,
@@ -43,6 +43,9 @@ const ManageActivities = () => {
   const [viewingActivity, setViewingActivity] = useState(null); // Thêm state cho xem
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingActivities, setIsLoadingActivities] = useState(true);
+
+  // THÊM MỚI: State cho bộ lọc trạng thái hoạt động
+  const [filterStatus, setFilterStatus] = useState("all"); // 'all', 'active', 'expired'
 
   // Guest management states
   const [newGuestName, setNewGuestName] = useState("");
@@ -101,6 +104,32 @@ const ManageActivities = () => {
       loadActivities();
     }
   }, [user]);
+
+  // Check if registration deadline has passed
+  const isRegistrationExpired = (deadline) => {
+    if (!deadline) return false;
+    const deadlineDate =
+      typeof deadline === "string" ? new Date(deadline) : deadline;
+    return new Date() > deadlineDate;
+  };
+
+  // THÊM MỚI: Sử dụng useMemo để tạo danh sách hoạt động đã được lọc
+  const filteredActivities = useMemo(() => {
+    if (filterStatus === "active") {
+      // Lọc ra các hoạt động chưa hết hạn đăng ký
+      return activities.filter(
+        (activity) => !isRegistrationExpired(activity.registrationDeadline)
+      );
+    }
+    if (filterStatus === "expired") {
+      // Lọc ra các hoạt động đã hết hạn đăng ký
+      return activities.filter((activity) =>
+        isRegistrationExpired(activity.registrationDeadline)
+      );
+    }
+    // Mặc định trả về tất cả
+    return activities;
+  }, [activities, filterStatus]); // Phụ thuộc vào activities và filterStatus
 
   const resetForm = () => {
     setFormData({
@@ -351,14 +380,6 @@ const ManageActivities = () => {
     return date.toLocaleString("vi-VN");
   };
 
-  // Check if registration deadline has passed
-  const isRegistrationExpired = (deadline) => {
-    if (!deadline) return false;
-    const deadlineDate =
-      typeof deadline === "string" ? new Date(deadline) : deadline;
-    return new Date() > deadlineDate;
-  };
-
   // Component hiển thị logo theo loại hoạt động - CHỈ LOGO
   const ActivityTypeLogo = ({ type }) => {
     if (type === "khoa") {
@@ -423,14 +444,12 @@ const ManageActivities = () => {
                 Thống kê
               </a>
             </li>
-            {/* --- ICON THƯ --- */}
             <li>
               <a
                 href="/admin_dashboard"
-                title="Tin nhắn" // Thêm title để người dùng biết icon này làm gì
+                title="Tin nhắn"
                 className="px-3 py-2 font-semibold hover:text-blue-500"
               >
-                {/* SVG cho icon Thư */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -445,18 +464,15 @@ const ManageActivities = () => {
                     d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
                   />
                 </svg>
-                <span className="sr-only">Tin nhắn</span>{" "}
-                {/* Để hỗ trợ screen reader */}
+                <span className="sr-only">Tin nhắn</span>
               </a>
             </li>
-            {/* --- ICON NGƯỜI DÙNG --- */}
             <li>
               <a
                 href="/admin_profile"
                 title="Hồ sơ"
                 className="px-3 py-2 font-semibold hover:text-blue-500"
               >
-                {/* SVG cho icon Người dùng */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -474,14 +490,12 @@ const ManageActivities = () => {
                 <span className="sr-only">Hồ sơ người dùng</span>
               </a>
             </li>
-            {/* --- ICON ĐĂNG XUẤT --- */}
             <li>
               <a
                 href="/login"
                 title="Đăng xuất"
                 className="px-3 py-2 bg-indigo-600 rounded font-semibold hover:bg-indigo-700 flex items-center"
               >
-                {/* SVG cho icon Đăng xuất */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -509,43 +523,79 @@ const ManageActivities = () => {
           Danh sách hoạt động
         </h2>
 
-        {/* Dropdown Button */}
-        <div className="relative inline-block mb-6">
-          <button
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="bg-[#1a73e8] hover:bg-[#155ab6] text-white px-5 py-2 rounded text-sm font-medium flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Thêm hoạt động
-            <ChevronDown className="h-4 w-4" />
-          </button>
+        {/* CẬP NHẬT: Thêm khu vực chứa các nút điều khiển */}
+        <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
+          {/* Dropdown Button "Thêm hoạt động" */}
+          <div className="relative inline-block">
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="bg-[#1a73e8] hover:bg-[#155ab6] text-white px-5 py-2 rounded text-sm font-medium flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Thêm hoạt động
+              <ChevronDown className="h-4 w-4" />
+            </button>
+            {showDropdown && (
+              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded shadow-lg z-10 min-w-[200px]">
+                <button
+                  onClick={() => openModal("khoa")}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-3"
+                >
+                  <img
+                    src="assets/images/logo.png"
+                    alt="Logo Khoa"
+                    className="w-6 h-6 rounded-full"
+                  />
+                  Hoạt động Khoa
+                </button>
+                <button
+                  onClick={() => openModal("truong")}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-3 border-t"
+                >
+                  <img
+                    src="assets/images/Doan.png"
+                    alt="Logo Đoàn"
+                    className="w-6 h-6 rounded-full"
+                  />
+                  Hoạt động Đoàn
+                </button>
+              </div>
+            )}
+          </div>
 
-          {showDropdown && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded shadow-lg z-10 min-w-[200px]">
-              <button
-                onClick={() => openModal("khoa")}
-                className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-3"
-              >
-                <img
-                  src="assets/images/logo.png"
-                  alt="Logo Khoa"
-                  className="w-6 h-6 rounded-full"
-                />
-                Hoạt động Khoa
-              </button>
-              <button
-                onClick={() => openModal("truong")}
-                className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-3 border-t"
-              >
-                <img
-                  src="assets/images/Doan.png"
-                  alt="Logo Đoàn"
-                  className="w-6 h-6 rounded-full"
-                />
-                Hoạt động Đoàn
-              </button>
-            </div>
-          )}
+          {/* THÊM MỚI: Nhóm nút lọc */}
+          <div className="flex items-center gap-2 border border-gray-200 rounded-lg p-1 bg-white">
+            <button
+              onClick={() => setFilterStatus("all")}
+              className={`px-3 py-1 text-sm rounded-md transition ${
+                filterStatus === "all"
+                  ? "bg-blue-600 text-white shadow"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Tất cả
+            </button>
+            <button
+              onClick={() => setFilterStatus("active")}
+              className={`px-3 py-1 text-sm rounded-md transition ${
+                filterStatus === "active"
+                  ? "bg-green-600 text-white shadow"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Còn hạn ĐK
+            </button>
+            <button
+              onClick={() => setFilterStatus("expired")}
+              className={`px-3 py-1 text-sm rounded-md transition ${
+                filterStatus === "expired"
+                  ? "bg-red-600 text-white shadow"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Hết hạn ĐK
+            </button>
+          </div>
         </div>
 
         {/* Activities Table */}
@@ -582,7 +632,8 @@ const ManageActivities = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {activities.map((activity) => {
+                  {/* CẬP NHẬT: map qua filteredActivities thay vì activities */}
+                  {filteredActivities.map((activity) => {
                     const isExpired = isRegistrationExpired(
                       activity.registrationDeadline
                     );
@@ -727,9 +778,15 @@ const ManageActivities = () => {
               </table>
             </div>
 
-            {activities.length === 0 && (
+            {/* CẬP NHẬT: Thông báo khi không có dữ liệu */}
+            {activities.length === 0 && !isLoadingActivities && (
               <div className="text-center py-8 text-gray-500">
                 Chưa có hoạt động nào. Nhấn "Thêm hoạt động" để bắt đầu.
+              </div>
+            )}
+            {activities.length > 0 && filteredActivities.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                Không có hoạt động nào phù hợp với bộ lọc đã chọn.
               </div>
             )}
           </div>
