@@ -15,6 +15,9 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../services/firebase";
 import toast from "react-hot-toast";
+import { storage } from "../../services/firebase"; // Import storage
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
 import {
   Plus,
   Edit,
@@ -159,20 +162,42 @@ const ManageActivities = () => {
       return;
     }
 
-    // Validate form
-    if (!formData.title.trim() || !formData.description.trim()) {
+    if (
+      !formData.title.trim() ||
+      !formData.description.trim() ||
+      !formData.startTime ||
+      !formData.registrationDeadline
+    ) {
       toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
       return;
     }
 
-    if (!formData.startTime || !formData.registrationDeadline) {
-      toast.error("Vui lòng chọn đầy đủ thời gian");
-      return;
-    }
-
     setIsSubmitting(true);
+    const toastId = toast.loading(
+      editingActivity ? "Đang cập nhật..." : "Đang tạo mới..."
+    );
 
     try {
+      // --- BƯỚC A: TẢI ẢNH LÊN FIREBASE STORAGE ---
+      const imageUrls = [];
+      if (formData.images.length > 0) {
+        toast.loading("Đang tải hình ảnh...", { id: toastId });
+
+        const uploadPromises = formData.images.map((file) => {
+          const uniqueFileName = `${uuidv4()}-${file.name}`;
+          const imageRef = ref(storage, `activity_images/${uniqueFileName}`);
+          return uploadBytes(imageRef, file).then((snapshot) =>
+            getDownloadURL(snapshot.ref)
+          );
+        });
+
+        const resolvedImageUrls = await Promise.all(uploadPromises);
+        imageUrls.push(...resolvedImageUrls);
+
+        toast.loading("Đang lưu thông tin hoạt động...", { id: toastId });
+      }
+
+      // --- BƯỚC B: CHUẨN BỊ VÀ LƯU DỮ LIỆU VÀO FIRESTORE ---
       const activityData = {
         title: formData.title.trim(),
         description: formData.description.trim(),
@@ -185,34 +210,36 @@ const ManageActivities = () => {
         socialWorkPoints: Number.parseInt(formData.socialWorkPoints) || 0,
         guests: formData.guests,
         status: formData.status,
-        images: formData.images.map((file) => file.name),
+        // Lưu mảng các URL đầy đủ, không phải tên file
+        images: imageUrls,
         ...(editingActivity
-          ? {
-              updatedAt: serverTimestamp(),
-            }
+          ? { updatedAt: serverTimestamp() }
           : {
               createdAt: serverTimestamp(),
               createdBy: user.uid,
+              currentRegistrations: 0,
             }),
       };
 
       if (editingActivity) {
+        // Lưu ý: Logic này sẽ thay thế mảng ảnh cũ.
+        // Nếu muốn giữ ảnh cũ và thêm mới, bạn cần xử lý phức tạp hơn.
         await updateDoc(
           doc(db, "activities", editingActivity.id),
           activityData
         );
-        toast.success("Cập nhật hoạt động thành công!");
+        toast.success("Cập nhật hoạt động thành công!", { id: toastId });
       } else {
         await addDoc(collection(db, "activities"), activityData);
-        toast.success("Tạo hoạt động mới thành công!");
+        toast.success("Tạo hoạt động mới thành công!", { id: toastId });
       }
 
       await loadActivities();
       setShowModal(false);
       resetForm();
     } catch (error) {
-      console.error("Lỗi lưu hoạt động:", error);
-      toast.error("Có lỗi xảy ra khi lưu hoạt động");
+      console.error("Lỗi khi lưu hoạt động:", error);
+      toast.error(`Có lỗi xảy ra: ${error.message}`, { id: toastId });
     } finally {
       setIsSubmitting(false);
     }
@@ -264,8 +291,8 @@ const ManageActivities = () => {
     const isExpired = isRegistrationExpired(activity?.registrationDeadline);
 
     const confirmMessage = isExpired
-      ? `Bạn có chắc chắn muốn xóa hoạt động "${activity?.title}" không?\n\n⚠️ Hoạt động này đã hết hạn đăng ký.`
-      : `Bạn có chắc chắn muốn xóa hoạt động "${activity?.title}" không?\n\n⚠️ Hành động này không thể hoàn tác!`;
+      ? `Bạn có chắc chắn muốn xóa hoạt động "${activity?.title}" không?\nHoạt động này đã hết hạn đăng ký.`
+      : `Bạn có chắc chắn muốn xóa hoạt động "${activity?.title}" không?\n\ Hành động này không thể hoàn tác!`;
 
     if (!window.confirm(confirmMessage)) return;
 
