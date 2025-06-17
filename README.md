@@ -16,9 +16,8 @@
      
      + Ở mục điểm danh , cho lọc hoạt động theo date ( ngày là ngày hội thảo bắt đầu)
      + Trước cái bảng Bên trái ghi tên hoạt động , Bên phải mã QR điểm danh nhấn vô ( hỏi Bạn muốn bắt đầu điểm danh - Xác nhận - bắt đầu tính thời gian ) 
-     + Mã QR hiện lên , sau 1 tiếng mã QR bị huỷ
-     + Bảng có thông tin ( loại hd, mã sv, họ tên, time điểm danh, trạng thái là có hoặc không hoặc chờ xử lý(mặc định không), hành đọng là nút bật mở( mặc địnhh là tắt)
-     => Nếu trước 15 kể từ thời điểm QR được tạo, mà sv checkin thì trạng thái là Có 
-     => Sau 15 phút kể từ thời điểm QR được tạo, mà sv checkin thì trạng thái là Chờ xử lý, lúc này nút ơ mục hành động dc enable và người quản trị có thể bật , hoặc tắt => nếu bật thì trạng thái về Có, không bật là Không( nếu có 1 hành đọng tắt)
-     => Sau 30 phút huỷ mã QR và có bất kỳ checkin nào cũng là Không -> tbaso quá thười gian rồi 
+     + Mã QR hiện lên , sau 6 tiếng mã QR không hoạt động
+     + Bảng có thông tin ( loại hd, mã sv, họ tên, time điểm danh, trạng thái là có hoặc không hoặc chờ xử lý(mặc định không), hành đông là nút bật mở( mặc địnhh là tắt)
+     => Nếu trước 5 kể từ thời điểm QR được tạo, mà sv checkin thì trạng thái là Có 
+    
   
