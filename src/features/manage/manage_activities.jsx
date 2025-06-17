@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react"; // THÊM MỚI: import useMemo
+import { useState, useEffect, useMemo } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
   collection,
@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../services/firebase";
 import toast from "react-hot-toast";
-import { storage } from "../../services/firebase"; // Import storage
+import { storage } from "../../services/firebase"; 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -33,6 +33,7 @@ import {
   MapPin,
   Eye,
 } from "lucide-react";
+import Header from "../../component/Header";
 
 const ManageActivities = () => {
   const [user] = useAuthState(auth);
@@ -40,28 +41,28 @@ const ManageActivities = () => {
   const [showModal, setShowModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [editingActivity, setEditingActivity] = useState(null);
-  const [viewingActivity, setViewingActivity] = useState(null); // Thêm state cho xem
+  const [viewingActivity, setViewingActivity] = useState(null); 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingActivities, setIsLoadingActivities] = useState(true);
 
-  // THÊM MỚI: State cho bộ lọc trạng thái hoạt động
-  const [filterStatus, setFilterStatus] = useState("all"); // 'all', 'active', 'expired'
 
-  // Guest management states
+  const [filterStatus, setFilterStatus] = useState("all"); 
+
+
   const [newGuestName, setNewGuestName] = useState("");
   const [newGuestPosition, setNewGuestPosition] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    activityType: "khoa", // "khoa" hoặc "truong"
+    activityType: "khoa", 
     startTime: "",
-    registrationDeadline: "", // Thêm deadline đăng ký
+    registrationDeadline: "", 
     location: "",
     maxParticipants: "",
     trainingPoints: "",
     socialWorkPoints: "",
-    guests: [], // Array of {name, position}
+    guests: [], 
     status: true,
     images: [],
   });
@@ -105,7 +106,7 @@ const ManageActivities = () => {
     }
   }, [user]);
 
-  // Check if registration deadline has passed
+  
   const isRegistrationExpired = (deadline) => {
     if (!deadline) return false;
     const deadlineDate =
@@ -113,7 +114,7 @@ const ManageActivities = () => {
     return new Date() > deadlineDate;
   };
 
-  // THÊM MỚI: Sử dụng useMemo để tạo danh sách hoạt động đã được lọc
+ 
   const filteredActivities = useMemo(() => {
     if (filterStatus === "active") {
       // Lọc ra các hoạt động chưa hết hạn đăng ký
@@ -127,9 +128,9 @@ const ManageActivities = () => {
         isRegistrationExpired(activity.registrationDeadline)
       );
     }
-    // Mặc định trả về tất cả
+   
     return activities;
-  }, [activities, filterStatus]); // Phụ thuộc vào activities và filterStatus
+  }, [activities, filterStatus]);
 
   const resetForm = () => {
     setFormData({
@@ -200,6 +201,15 @@ const ManageActivities = () => {
       toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
       return;
     }
+    const startTime = new Date(formData.startTime);
+    const deadlineTime = new Date(formData.registrationDeadline);
+
+    if (startTime <= deadlineTime) {
+      toast.error(
+        "Thời gian bắt đầu hoạt động phải sau thời gian hết hạn đăng ký!"
+      );
+      return; 
+    }
 
     setIsSubmitting(true);
     const toastId = toast.loading(
@@ -239,7 +249,7 @@ const ManageActivities = () => {
         socialWorkPoints: Number.parseInt(formData.socialWorkPoints) || 0,
         guests: formData.guests,
         status: formData.status,
-        // Lưu mảng các URL đầy đủ, không phải tên file
+     
         images: imageUrls,
         ...(editingActivity
           ? { updatedAt: serverTimestamp() }
@@ -251,8 +261,7 @@ const ManageActivities = () => {
       };
 
       if (editingActivity) {
-        // Lưu ý: Logic này sẽ thay thế mảng ảnh cũ.
-        // Nếu muốn giữ ảnh cũ và thêm mới, bạn cần xử lý phức tạp hơn.
+     
         await updateDoc(
           doc(db, "activities", editingActivity.id),
           activityData
@@ -294,7 +303,7 @@ const ManageActivities = () => {
     setShowModal(true);
   };
 
-  // Thêm function xem chi tiết
+
   const handleView = (activity) => {
     setViewingActivity(activity);
     setEditingActivity(null);
@@ -380,7 +389,7 @@ const ManageActivities = () => {
     return date.toLocaleString("vi-VN");
   };
 
-  // Component hiển thị logo theo loại hoạt động - CHỈ LOGO
+
   const ActivityTypeLogo = ({ type }) => {
     if (type === "khoa") {
       return (
@@ -404,118 +413,7 @@ const ManageActivities = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Header */}
-      <header className="bg-indigo-900 text-white px-6 py-4 flex justify-between flex-wrap items-center">
-        <div className="flex items-center gap-3">
-          <img src="assets/images/logo.png" alt="Logo" className="w-10 h-10" />
-          <h1 className="text-lg font-bold">Công Nghệ Thông Tin</h1>
-        </div>
-        <nav>
-          <ul className="flex flex-wrap gap-3 items-center">
-            <li>
-              <a
-                href="/admin_dashboard"
-                className="px-3 py-2 font-semibold hover:text-blue-500"
-              >
-                Trang chủ
-              </a>
-            </li>
-            <li>
-              <a
-                href="/manage_activities"
-                className="px-3 py-2 font-semibold hover:text-blue-500"
-              >
-                Quản lý hoạt động
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="/manage_scores"
-                className="px-3 py-2 font-semibold hover:text-blue-500"
-              >
-                Danh sách đăng ký
-              </a>
-            </li>
-            <li>
-              <a
-                href="/statistics"
-                className="px-3 py-2 font-semibold hover:text-blue-500"
-              >
-                Thống kê
-              </a>
-            </li>
-            <li>
-              <a
-                href="/admin_dashboard"
-                title="Tin nhắn"
-                className="px-3 py-2 font-semibold hover:text-blue-500"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
-                  />
-                </svg>
-                <span className="sr-only">Tin nhắn</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/admin_profile"
-                title="Hồ sơ"
-                className="px-3 py-2 font-semibold hover:text-blue-500"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                  />
-                </svg>
-                <span className="sr-only">Hồ sơ người dùng</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/login"
-                title="Đăng xuất"
-                className="px-3 py-2 bg-indigo-600 rounded font-semibold hover:bg-indigo-700 flex items-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-                  />
-                </svg>
-                <span className="sr-only">Đăng xuất</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <main className="m-[20px]">
@@ -523,7 +421,7 @@ const ManageActivities = () => {
           Danh sách hoạt động
         </h2>
 
-        {/* CẬP NHẬT: Thêm khu vực chứa các nút điều khiển */}
+      
         <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
           {/* Dropdown Button "Thêm hoạt động" */}
           <div className="relative inline-block">
@@ -632,7 +530,7 @@ const ManageActivities = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* CẬP NHẬT: map qua filteredActivities thay vì activities */}
+                 
                   {filteredActivities.map((activity) => {
                     const isExpired = isRegistrationExpired(
                       activity.registrationDeadline
@@ -642,7 +540,7 @@ const ManageActivities = () => {
                         key={activity.id}
                         className={`hover:bg-gray-50 border-b ${
                           isExpired
-                            ? "bg-gray-200" // Nếu hết hạn đăng ký -> background xám
+                            ? "bg-gray-200" 
                             : activity.activityType === "khoa"
                             ? "bg-blue-50"
                             : ""
@@ -819,7 +717,7 @@ const ManageActivities = () => {
               </div>
 
               {viewingActivity ? (
-                // View Mode - Chỉ hiển thị thông tin
+                //Chỉ hiển thị thông tin
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -844,32 +742,47 @@ const ManageActivities = () => {
                       {formData.description}
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block font-small mb-1">
-                        Thời gian bắt đầu
+                
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+                    {/* Thời gian bắt đầu */}
+                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                      <label className="flex items-center text-sm font-semibold text-green-800 mb-1">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Thời gian diễn ra
                       </label>
-                      <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
+                      <p className="text-gray-800 font-medium pl-6">
                         {formatDateTime(formData.startTime)}
-                      </div>
+                      </p>
                     </div>
-                    <div>
-                      <label className="block font-small mb-1">
-                        Hạn đăng ký
+
+                    {/* Hạn đăng ký */}
+                    <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                      <label className="flex items-center text-sm font-semibold text-orange-800 mb-1">
+                        <Clock className="w-4 h-4 mr-2" />
+                        Hạn chót đăng ký
                       </label>
-                      <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
+                      <p className="text-gray-800 font-medium pl-6">
                         {formatDateTime(formData.registrationDeadline)}
-                      </div>
+                      </p>
+                      {/* Thêm cảnh báo nếu đã hết hạn */}
+                      {isRegistrationExpired(formData.registrationDeadline) && (
+                        <p className="text-red-600 text-xs font-semibold mt-1 pl-6">
+                          (Đã hết hạn đăng ký)
+                        </p>
+                      )}
                     </div>
-                    <div>
-                      <label className="block font-small mb-1">Địa điểm</label>
-                      <div className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
-                        {formData.location}
-                      </div>
+
+                    {/* Địa điểm */}
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 lg:col-span-1 md:col-span-2">
+                      <label className="flex items-center text-sm font-semibold text-blue-800 mb-1">
+                        <MapPin className="w-4 h-4 mr-2" />
+                        Địa điểm
+                      </label>
+                      <p className="text-gray-800 font-medium pl-6">
+                        {formData.location || "Chưa cập nhật"}
+                      </p>
                     </div>
                   </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block font-small mb-1">
@@ -919,7 +832,7 @@ const ManageActivities = () => {
                   </div>
                 </div>
               ) : (
-                // Edit/Add Mode - Form có thể chỉnh sửa
+                // - Form có thể chỉnh sửa
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -1070,7 +983,7 @@ const ManageActivities = () => {
                     </div>
                   </div>
 
-                  {/* Guest Management */}
+                  {/* Khách mời */}
                   <div>
                     <label className="block font-medium mb-2">Khách mời</label>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
